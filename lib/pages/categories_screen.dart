@@ -12,17 +12,19 @@ class CategoriesScreen extends StatelessWidget {
         id: '3', name: 'Acccessories', imageUrl: 'lib/assets/images/acces.jpg')
   ];
 
+  CategoriesScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
         backgroundColor: Colors.black,
-        title: Text('Categories', style: TextStyle(color: Colors.white)),
+        title: const Text('Categories', style: TextStyle(color: Colors.white)),
       ),
       body: GridView.builder(
-        padding: EdgeInsets.all(16.0),
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        padding: const EdgeInsets.all(16.0),
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2,
           childAspectRatio: 0.8,
         ),

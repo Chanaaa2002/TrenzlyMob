@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart'; 
 import 'clothing_item.dart'; 
 
 class CartItem {

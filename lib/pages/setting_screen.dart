@@ -4,13 +4,13 @@ class SettingsScreen extends StatelessWidget {
   final ThemeMode currentThemeMode;
   final ValueChanged<ThemeMode> onThemeChanged; // Callback to change theme mode
 
-  SettingsScreen({required this.currentThemeMode, required this.onThemeChanged});
+  const SettingsScreen({super.key, required this.currentThemeMode, required this.onThemeChanged});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Settings'),
+        title: const Text('Settings'),
         backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
       ),
       body: Padding(
@@ -26,7 +26,7 @@ class SettingsScreen extends StatelessWidget {
                 color: Theme.of(context).textTheme.bodyLarge!.color,
               ),
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [

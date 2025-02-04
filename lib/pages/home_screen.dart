@@ -18,7 +18,7 @@ import 'register.dart';
 class HomeScreen extends StatefulWidget {
   final VoidCallback onThemeToggle; // Add the onThemeToggle parameter
 
-  HomeScreen({required this.onThemeToggle});
+  const HomeScreen({super.key, required this.onThemeToggle});
 
   @override
   _HomeScreenState createState() => _HomeScreenState();
@@ -107,18 +107,18 @@ class _HomeScreenState extends State<HomeScreen> {
         title: Row(
           children: [
             Image.asset('lib/assets/images/logo.png', height: 40),
-            SizedBox(width: 10),
+            const SizedBox(width: 10),
             Text('TRENZLY',
                 style: TextStyle(
                     color: Theme.of(context).textTheme.bodyLarge!.color,
                     fontSize: 24)),
-            Spacer(),
+            const Spacer(),
             IconButton(
-              icon: Icon(Icons.brightness_6, color: Colors.orangeAccent),
+              icon: const Icon(Icons.brightness_6, color: Colors.orangeAccent),
               onPressed: widget.onThemeToggle, // Use the callback to toggle theme
             ),
             PopupMenuButton<String>(
-              icon: Icon(Icons.person, color: Colors.orangeAccent), // User icon for the sign-in/register menu
+              icon: const Icon(Icons.person, color: Colors.orangeAccent), // User icon for the sign-in/register menu
               onSelected: (value) {
                 if (value == 'Sign In') {
                   Navigator.push(
@@ -133,11 +133,11 @@ class _HomeScreenState extends State<HomeScreen> {
                 }
               },
               itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
-                PopupMenuItem<String>(
+                const PopupMenuItem<String>(
                   value: 'Sign In',
                   child: Text('Sign In'),
                 ),
-                PopupMenuItem<String>(
+                const PopupMenuItem<String>(
                   value: 'Register',
                   child: Text('Register'),
                 ),
@@ -199,7 +199,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     onTap: () {
                       // Navigate to all products screen
                     },
-                    child: Text('View All',
+                    child: const Text('View All',
                         style: TextStyle(
                             color: Colors.orangeAccent, fontSize: 16)),
                   ),
@@ -207,9 +207,9 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
             GridView.builder(
-              physics: NeverScrollableScrollPhysics(),
+              physics: const NeverScrollableScrollPhysics(),
               shrinkWrap: true,
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
                 childAspectRatio: 0.7,
               ),

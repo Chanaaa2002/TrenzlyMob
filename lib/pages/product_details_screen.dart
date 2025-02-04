@@ -4,7 +4,7 @@ import '../models/clothing_item.dart';
 class ProductDetailsScreen extends StatelessWidget {
   final ClothingItem product;
 
-  ProductDetailsScreen({required this.product});
+  const ProductDetailsScreen({super.key, required this.product});
 
   @override
   Widget build(BuildContext context) {
@@ -12,7 +12,7 @@ class ProductDetailsScreen extends StatelessWidget {
       backgroundColor: Colors.black,
       appBar: AppBar(
         backgroundColor: Colors.black,
-        title: Text(product.name, style: TextStyle(color: Colors.white)),
+        title: Text(product.name, style: const TextStyle(color: Colors.white)),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -22,26 +22,26 @@ class ProductDetailsScreen extends StatelessWidget {
               padding: const EdgeInsets.all(16.0),
               child: Text(
                 product.name,
-                style: TextStyle(color: Colors.white, fontSize: 24),
+                style: const TextStyle(color: Colors.white, fontSize: 24),
               ),
             ),
             Text(
               '\$${product.price}',
-              style: TextStyle(color: Colors.orangeAccent, fontSize: 20),
+              style: const TextStyle(color: Colors.orangeAccent, fontSize: 20),
             ),
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: Text(
                 product.description,
-                style: TextStyle(color: Colors.white70, fontSize: 16),
+                style: const TextStyle(color: Colors.white70, fontSize: 16),
               ),
             ),
             ElevatedButton(
               onPressed: () {
                 // Add to cart logic
               },
-              child: Text('Add to Cart'),
               style: ElevatedButton.styleFrom(backgroundColor: const Color.fromARGB(255, 79, 204, 68)),
+              child: Text('Add to Cart'),
             ),
           ],
         ),

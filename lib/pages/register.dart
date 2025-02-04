@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class RegisterPage extends StatefulWidget {
+  const RegisterPage({super.key});
+
   @override
   _RegisterPageState createState() => _RegisterPageState();
 }
@@ -16,7 +18,7 @@ class _RegisterPageState extends State<RegisterPage> {
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
-        title: Text('Register'),
+        title: const Text('Register'),
         backgroundColor: Colors.black,
       ),
       body: SingleChildScrollView(
@@ -24,7 +26,7 @@ class _RegisterPageState extends State<RegisterPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
+            const Text(
               'Create Account',
               style: TextStyle(
                 color: Colors.white,
@@ -32,57 +34,57 @@ class _RegisterPageState extends State<RegisterPage> {
                 fontWeight: FontWeight.bold,
               ),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             // Name Field
             TextField(
               controller: _nameController,
               decoration: InputDecoration(
                 labelText: 'Name',
-                labelStyle: TextStyle(color: Colors.grey),
+                labelStyle: const TextStyle(color: Colors.grey),
                 filled: true,
                 fillColor: Colors.grey[850],
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
               ),
-              style: TextStyle(color: Colors.white),
+              style: const TextStyle(color: Colors.white),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             // Email Field
             TextField(
               controller: _emailController,
               decoration: InputDecoration(
                 labelText: 'Email',
-                labelStyle: TextStyle(color: Colors.grey),
+                labelStyle: const TextStyle(color: Colors.grey),
                 filled: true,
                 fillColor: Colors.grey[850],
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
               ),
-              style: TextStyle(color: Colors.white),
+              style: const TextStyle(color: Colors.white),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             // Password Field
             TextField(
               controller: _passwordController,
               obscureText: true,
               decoration: InputDecoration(
                 labelText: 'Password',
-                labelStyle: TextStyle(color: Colors.grey),
+                labelStyle: const TextStyle(color: Colors.grey),
                 filled: true,
                 fillColor: Colors.grey[850],
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
               ),
-              style: TextStyle(color: Colors.white),
+              style: const TextStyle(color: Colors.white),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             // Gender Selection Dropdown
             DropdownButtonFormField<String>(
               value: _selectedGender,
-              hint: Text('Select Gender', style: TextStyle(color: Colors.grey)),
+              hint: const Text('Select Gender', style: TextStyle(color: Colors.grey)),
               decoration: InputDecoration(
                 filled: true,
                 fillColor: Colors.grey[850],
@@ -91,7 +93,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 ),
               ),
               dropdownColor: Colors.grey[850],
-              style: TextStyle(color: Colors.white),
+              style: const TextStyle(color: Colors.white),
               items: ['Male', 'Female', 'Other'].map((String gender) {
                 return DropdownMenuItem<String>(
                   value: gender,
@@ -104,7 +106,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 });
               },
             ),
-            SizedBox(height: 30),
+            const SizedBox(height: 30),
             // Sign Up Button
             ElevatedButton(
               onPressed: () {
@@ -112,12 +114,12 @@ class _RegisterPageState extends State<RegisterPage> {
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color.fromARGB(255, 81, 206, 81),
-                minimumSize: Size(double.infinity, 50),
+                minimumSize: const Size(double.infinity, 50),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
               ),
-              child: Text('Sign Up'),
+              child: const Text('Sign Up'),
             ),
           ],
         ),

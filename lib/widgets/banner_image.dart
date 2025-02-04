@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 class BannerImage extends StatelessWidget {
   final String imageUrl;
 
-  BannerImage({required this.imageUrl});
+  const BannerImage({super.key, required this.imageUrl});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.all(16.0),
+      margin: const EdgeInsets.all(16.0),
       height: 200,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(15),

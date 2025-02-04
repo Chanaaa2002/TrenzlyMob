@@ -26,7 +26,7 @@ class ProductListScreen extends StatelessWidget {
     // Add more products
   ];
 
-  ProductListScreen({required this.category});
+  ProductListScreen({super.key, required this.category});
 
   @override
   Widget build(BuildContext context) {
@@ -36,11 +36,11 @@ class ProductListScreen extends StatelessWidget {
       backgroundColor: Colors.black,
       appBar: AppBar(
         backgroundColor: Colors.black,
-        title: Text('${category.name} Wear', style: TextStyle(color: Colors.white)),
+        title: Text('${category.name} Wear', style: const TextStyle(color: Colors.white)),
       ),
       body: GridView.builder(
-        padding: EdgeInsets.all(16.0),
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        padding: const EdgeInsets.all(16.0),
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2,
           childAspectRatio: 0.7, // Adjusted to make the cards taller
         ),

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class Search extends StatelessWidget {
   final TextEditingController controller;
 
-  Search({required this.controller});
+  const Search({super.key, required this.controller});
 
   @override
   Widget build(BuildContext context) {
@@ -13,7 +13,7 @@ class Search extends StatelessWidget {
         controller: controller,
         decoration: InputDecoration(
           hintText: 'Search for products...',
-          prefixIcon: Icon(Icons.search, color: Colors.grey),
+          prefixIcon: const Icon(Icons.search, color: Colors.grey),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(25),
             borderSide: BorderSide.none,
