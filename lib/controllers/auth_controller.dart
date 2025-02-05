@@ -98,4 +98,31 @@ class AuthController {
       return false;
     }
   }
+
+  Future<User?> getUserDetails() async {
+  final response = await _dio.get("${Config.baseUrl}/user/profile");
+
+  if (response.statusCode == 200) {
+    return User.fromJson(response.data);
+  } else {
+    return null;
+  }
+}
+
+Future<bool> updateUserDetails(String name, String email, String? password) async {
+  final data = {
+    "name": name,
+    "email": email,
+  };
+
+  if (password != null) {
+    data["password"] = password;
+  }
+
+  final response = await _dio.put("${Config.baseUrl}/user/update", data: data);
+
+  return response.statusCode == 200;
+}
+
+
 }
