@@ -1,33 +1,16 @@
 import 'package:flutter/material.dart';
-import '../models/product.dart';
+import 'package:provider/provider.dart';
+import '../provider/cart_provider.dart';
+import 'checkout_screen.dart';
 
-class CartScreen extends StatefulWidget {
-  final List<Map<String, dynamic>> cartItems;
-
-  const CartScreen({super.key, required this.cartItems});
-
-  @override
-  _CartScreenState createState() => _CartScreenState();
-}
-
-class _CartScreenState extends State<CartScreen> {
-  void updateQuantity(int index, int newQuantity) {
-    setState(() {
-      widget.cartItems[index]['quantity'] = newQuantity;
-      widget.cartItems[index]['total'] =
-          widget.cartItems[index]['product'].price * newQuantity;
-    });
-  }
-
-  double calculateTotal() {
-    return widget.cartItems.fold(
-        0, (total, item) => total + item['total']);
-  }
+class CartScreen extends StatelessWidget {
+  const CartScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final cartProvider = Provider.of<CartProvider>(context);
+    final cartItems = cartProvider.cartItems;
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
-    final backgroundColor = isDarkMode ? Colors.black : Colors.white;
     final textColor = isDarkMode ? Colors.white : Colors.black;
 
     return Scaffold(
@@ -36,7 +19,7 @@ class _CartScreenState extends State<CartScreen> {
         title: const Text('Cart'),
         centerTitle: true,
       ),
-      body: widget.cartItems.isEmpty
+      body: cartItems.isEmpty
           ? Center(
               child: Text(
                 'Your cart is empty',
@@ -49,9 +32,9 @@ class _CartScreenState extends State<CartScreen> {
                 children: [
                   Expanded(
                     child: ListView.builder(
-                      itemCount: widget.cartItems.length,
+                      itemCount: cartItems.length,
                       itemBuilder: (context, index) {
-                        final item = widget.cartItems[index];
+                        final item = cartItems[index];
                         return Card(
                           margin: const EdgeInsets.symmetric(vertical: 8),
                           shape: RoundedRectangleBorder(
@@ -105,14 +88,9 @@ class _CartScreenState extends State<CartScreen> {
                                             children: [
                                               IconButton(
                                                 onPressed: () {
-                                                  if (item['quantity'] > 1) {
-                                                    updateQuantity(
-                                                        index,
-                                                        item['quantity'] - 1);
-                                                  }
+                                                  cartProvider.updateQuantity(index, item['quantity'] - 1);
                                                 },
-                                                icon: const Icon(
-                                                    Icons.remove_circle),
+                                                icon: const Icon(Icons.remove_circle),
                                                 color: Colors.teal,
                                               ),
                                               Text(
@@ -123,18 +101,15 @@ class _CartScreenState extends State<CartScreen> {
                                               ),
                                               IconButton(
                                                 onPressed: () {
-                                                  updateQuantity(
-                                                      index,
-                                                      item['quantity'] + 1);
+                                                  cartProvider.updateQuantity(index, item['quantity'] + 1);
                                                 },
-                                                icon: const Icon(
-                                                    Icons.add_circle),
+                                                icon: const Icon(Icons.add_circle),
                                                 color: Colors.teal,
                                               ),
                                             ],
                                           ),
                                           Text(
-                                            "\$${item['total'].toStringAsFixed(2)}",
+                                            "Rs. ${item['total'].toStringAsFixed(2)}",
                                             style: TextStyle(
                                               fontSize: 16,
                                               fontWeight: FontWeight.bold,
@@ -154,7 +129,6 @@ class _CartScreenState extends State<CartScreen> {
                     ),
                   ),
                   const SizedBox(height: 16),
-                  // Total Price Section
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -167,7 +141,7 @@ class _CartScreenState extends State<CartScreen> {
                         ),
                       ),
                       Text(
-                        "\$${calculateTotal().toStringAsFixed(2)}",
+                        "Rs. ${cartProvider.calculateTotal().toStringAsFixed(2)}",
                         style: const TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
@@ -177,12 +151,20 @@ class _CartScreenState extends State<CartScreen> {
                     ],
                   ),
                   const SizedBox(height: 16),
-                  // Proceed to Checkout Button
                   ElevatedButton(
                     onPressed: () {
-                      // Handle Proceed to Checkout Logic
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Proceeding to checkout!')),
+                      if (cartProvider.cartItems.isEmpty) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Your cart is empty!')),
+                        );
+                        return;
+                      }
+
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => CheckoutScreen(), // Navigate to Checkout
+                        ),
                       );
                     },
                     style: ElevatedButton.styleFrom(
@@ -195,7 +177,7 @@ class _CartScreenState extends State<CartScreen> {
                     child: const Center(
                       child: Text(
                         "Proceed to Checkout",
-                        style: TextStyle(fontSize: 16),
+                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                       ),
                     ),
                   ),

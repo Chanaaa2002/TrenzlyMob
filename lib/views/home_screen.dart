@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:madpro/views/cart_screen.dart';
 import 'package:madpro/views/profile_screen.dart';
 import '../controllers/auth_controller.dart';
-import 'product_screen.dart'; // Import the ProductScreen class
+import '../controllers/product_controller.dart';
+import '../models/product.dart';
+import 'product_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -15,9 +17,8 @@ class _HomeScreenState extends State<HomeScreen> {
   int _currentIndex = 0;
   bool _isDarkMode = false; // Dark mode toggle state
   final AuthController authController = AuthController();
-  final List<Map<String, dynamic>> cartItems = []; // Define cartItems
+  final List<Map<String, dynamic>> cartItems = [];
 
-  // Pages for bottom navigation
   late List<Widget> _pages;
 
   @override
@@ -26,19 +27,17 @@ class _HomeScreenState extends State<HomeScreen> {
     _pages = [
       HomePage(),
       ProductScreen(),
-      CartScreen(cartItems: cartItems),
+      CartScreen(),
       ProfileScreen(),
     ];
   }
 
-  // Bottom navigation tab handler
   void _onTabTapped(int index) {
     setState(() {
       _currentIndex = index;
     });
   }
 
-  // Logout function
   void _logout() async {
     await authController.logout();
     Navigator.pushReplacementNamed(context, '/login');
@@ -63,9 +62,7 @@ class _HomeScreenState extends State<HomeScreen> {
         actions: [
           IconButton(
             icon: Icon(Icons.search, color: textColor),
-            onPressed: () {
-              // Add search logic here
-            },
+            onPressed: () {},
           ),
           IconButton(
             icon: Icon(_isDarkMode ? Icons.light_mode : Icons.dark_mode, color: textColor),
@@ -81,10 +78,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
-      body: Container(
-        color: backgroundColor,
-        child: _pages[_currentIndex],
-      ),
+      body: _pages[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
         onTap: _onTabTapped,
@@ -123,14 +117,27 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
-// Example Home Page
-class HomePage extends StatelessWidget {
+// HomePage with dynamically loaded products
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
+
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  final ProductController _productController = ProductController();
+  late Future<List<Product>> _productsFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _productsFuture = _productController.fetchProducts(); // Fetch products on init
+  }
 
   @override
   Widget build(BuildContext context) {
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
-    final backgroundColor = isDarkMode ? Colors.black : Colors.white;
     final textColor = isDarkMode ? Colors.white : Colors.black;
 
     return SingleChildScrollView(
@@ -138,7 +145,6 @@ class HomePage extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Banner Section
           Container(
             height: 180,
             decoration: BoxDecoration(
@@ -150,11 +156,7 @@ class HomePage extends StatelessWidget {
             ),
           ),
           SizedBox(height: 20),
-          // Categories Section
-          Text(
-            "Categories",
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: textColor),
-          ),
+          Text("Categories", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: textColor)),
           SizedBox(height: 10),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -166,29 +168,49 @@ class HomePage extends StatelessWidget {
             ],
           ),
           SizedBox(height: 20),
-          // Popular Products Section
-          Text(
-            "Popular Products",
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: textColor),
-          ),
+          Text("Popular Products", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: textColor)),
           SizedBox(height: 10),
-          GridView.builder(
-            shrinkWrap: true,
-            physics: NeverScrollableScrollPhysics(),
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              crossAxisSpacing: 10,
-              mainAxisSpacing: 10,
-              childAspectRatio: 2 / 3,
-            ),
-            itemCount: 4, // Replace with your product count
-            itemBuilder: (context, index) {
-              return ProductCard(
-                name: "Product $index",
-                category: "Category $index",
-                price: "\$${(index + 1) * 100}",
-                imagePath: 'lib/assets/images/product_$index.jpg', // Provide the image path
-                isDarkMode: isDarkMode,
+          
+          // Use FutureBuilder to handle product fetching dynamically
+          FutureBuilder<List<Product>>(
+            future: _productsFuture,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Center(child: CircularProgressIndicator());
+              } else if (snapshot.hasError) {
+                return Center(child: Text("Failed to load products.", style: TextStyle(color: textColor)));
+              } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                return Center(child: Text("No products available.", style: TextStyle(color: textColor)));
+              }
+
+              final products = snapshot.data!;
+
+              return GridView.builder(
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 10,
+                  mainAxisSpacing: 10,
+                  childAspectRatio: 2 / 3,
+                ),
+                itemCount: products.length,
+                itemBuilder: (context, index) {
+                  final product = products[index];
+                  return ProductCard(
+                    name: product.name,
+                    description: product.description,
+                    price: "Rs. ${product.price.toStringAsFixed(2)}",
+                    imagePath: product.images.isNotEmpty ? product.images[0] : 'assets/images/placeholder.png',
+                    isDarkMode: isDarkMode,
+                    onTap: () {
+                      // Handle product tap
+                    },
+                    onAddToCart: () {
+                      // Handle add to cart
+                    },
+                  );
+                },
               );
             },
           ),
@@ -198,7 +220,7 @@ class HomePage extends StatelessWidget {
   }
 }
 
-// Category Button Widget
+// Category Button
 class CategoryButton extends StatelessWidget {
   final String label;
   final bool isDarkMode;
@@ -207,108 +229,14 @@ class CategoryButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MouseRegion(
-      onEnter: (_) => {},
-      onExit: (_) => {},
-      child: ElevatedButton(
-        onPressed: () {
-          // Add your button logic here
-        },
-        style: ElevatedButton.styleFrom(
-          backgroundColor: isDarkMode ? Colors.grey[900] : Colors.grey[300],
-          foregroundColor: isDarkMode ? Colors.white : Colors.black,
-          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-        ),
-        child: Text(label, style: TextStyle(fontSize: 14)),
+    return ElevatedButton(
+      onPressed: () {},
+      style: ElevatedButton.styleFrom(
+        backgroundColor: isDarkMode ? Colors.grey[900] : Colors.grey[300],
+        foregroundColor: isDarkMode ? Colors.white : Colors.black,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       ),
+      child: Text(label, style: TextStyle(fontSize: 14)),
     );
   }
 }
-
-class ProductCard extends StatelessWidget {
-  final String name;
-  final String category;
-  final String price;
-  final String imagePath; // Path to the product image
-  final bool isDarkMode;
-
-  const ProductCard({super.key, 
-    required this.name,
-    required this.category,
-    required this.price,
-    required this.imagePath, // Added imagePath
-    required this.isDarkMode,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12),
-        color: isDarkMode ? Colors.grey[800] : Colors.white,
-        boxShadow: [
-          BoxShadow(
-            color: isDarkMode ? Colors.black26 : Colors.grey.shade300,
-            blurRadius: 5,
-            spreadRadius: 2,
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Product Image
-          ClipRRect(
-            borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
-            child: Image.asset(
-              imagePath,
-              height: 120,
-              width: double.infinity,
-              fit: BoxFit.cover,
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Product Name
-                Text(
-                  name,
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: isDarkMode ? Colors.white : Colors.black,
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                // Product Category
-                Text(
-                  category,
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: isDarkMode ? Colors.white70 : Colors.grey[600],
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                // Product Price
-                Text(
-                  price,
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.teal,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-

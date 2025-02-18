@@ -56,8 +56,8 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
             ClipRRect(
               borderRadius: BorderRadius.circular(16),
               child: Image.network(
-                widget.product.images != null && widget.product.images!.isNotEmpty
-                    ? widget.product.images![0]
+                widget.product.images.isNotEmpty
+                    ? widget.product.images[0]
                     : 'lib/assets/images/placeholder.png',
                 height: 300,
                 width: double.infinity,
@@ -72,7 +72,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
             ),
             const SizedBox(height: 8),
             Text(
-              "\$${widget.product.price?.toStringAsFixed(2) ?? '0.0'}",
+              "\$${widget.product.price.toStringAsFixed(2) ?? '0.0'}",
               style: const TextStyle(fontSize: 20, color: Colors.teal, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
